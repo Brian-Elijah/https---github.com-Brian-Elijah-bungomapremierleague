@@ -1,6 +1,7 @@
 <?php
 
-require_once '../Config/db_config.php';
+require_once(__DIR__ . '/../Config/db_config.php');
+
  class Database {
  	private $host;
  	private $username;

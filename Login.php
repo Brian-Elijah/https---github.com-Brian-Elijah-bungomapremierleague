@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <!-- Coding By CodingNepal - codingnepalweb.com -->
 <html lang="en" dir="ltr">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -126,16 +125,15 @@
 <body>
   <div class="wrapper">
     <h2>Login</h2>
-    <form action="your_php_script.php" method="post">
-      <div class="input-box">
+    <form action="" method="post">
+    <div class="input-box">
       <input type="text" placeholder="User Name" name="uname" required>
       </div>
       <div class="input-box">
       <input type="password" placeholder="Enter Password" name="pwd" required>
       </div>
       <div class="input-box button">
-  <input type="Submit" name="submit" value="Login now">
- </div>
+      <input type="Submit" name="submit" value="Login now">
 
       <div class="text">
         <h3>Dont have an account? <a href="register">Register now</a></h3>
@@ -146,20 +144,44 @@
 
 </html>
 <?php
-
-require_once '../Classes/Login.php';
-
+require_once(__DIR__ . '/Classes/Login.php');
 $LoginManager = new Login();
+$user = "";
+$pwd = "";
 
 if(isset($_POST['submit'])){
-  $user = $_POST['uname'];
-  $pwd = $_POST['pwd'];
+    $user = $_POST['uname'];
+    $pwd = $_POST['pwd'];
 }
+class Login {
+  public function getUser($username, $password) {
+      // Database connection setup
+      $conn = new mysqli("your_host", "your_username", "your_password", "your_database");
 
-$results = $LoginManager->getUser($user, $pwd);
-if ($results) {
- header ("Location:homePage.php");
-} else {
-  echo "Login Failed";
+      if ($conn->connect_error) {
+          die("Connection failed: " . $conn->connect_error);
+      }
+
+      $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+      $stmt->bind_param("ss", $username, $password);
+
+      $result = $stmt->execute();
+
+      if ($result) {
+          $numRows = $stmt->num_rows;
+
+          if ($numRows > 0) {
+              // Valid login credentials
+              return true;
+          } else {
+              // Invalid login credentials
+              return false;
+          }
+      } else {
+          // Query execution failed
+          return false;
+      }
+  } // Closing brace for the getUser method
+
+  // Other code...
 }
-?>
